@@ -1,0 +1,14 @@
+{
+  "name": "converter",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "express": "^4.16.3",
+    "handbrake-js": "^3.0.6",
+    "multer": "^1.3.1",
+    "nodemon": "^1.18.10"
+  },
+  "scripts": {
+    "start": "nodemon server.js"
+  }
+}
