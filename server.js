@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const helpers = require('./helpers');
-const hbjs = require('handbrake-js');
+const { TheVideoConverter } = require('@the-/video-converter')
 const fs = require('fs');
 const { promisify } = require('util')
 const unlinkAsync = promisify(fs.unlink)
@@ -48,7 +48,13 @@ app.post('/upload-profile-pic', (req, res) => {
         else if (err) {
             return res.send(err);
         }
-		
+		async function tryExample() {
+			const converter = new TheVideoConverter()
+			await converter.convertIntoMP4("./uploads/"+req.file.filename, "./encoded/"+req.file.filename)
+		  }
+		   
+		  tryExample().catch((err) => console.error(err)).finally(()=> res.send(`You have uploaded this video. Video will be available for 5 minutes. <hr/><video width="320" height="240" controls><source src="./encoded/${req.file.filename}" type="video/mp4">Your browser does not support the video tag.</video><hr /><a href="./">Upload another video.</a>`));
+		/*
 		hbjs.spawn({ 
 			input: "./uploads/"+req.file.filename, 
 			output: "./encoded/"+req.file.filename,
@@ -76,7 +82,7 @@ app.post('/upload-profile-pic', (req, res) => {
 		})
 
         // Display uploaded image for user validation
-        
+        */
     });
 });
 
