@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
-app.post('/upload-profile-pic', (req, res) => {
+app.post('/upload-video', (req, res) => {
     // 'profile_pic' is the name of our file input field in the HTML form
     let upload = multer({ storage: storage, fileFilter: helpers.imageFilter }).single('convs');
 
@@ -53,7 +53,13 @@ app.post('/upload-profile-pic', (req, res) => {
 			await converter.convertIntoMP4("./uploads/"+req.file.filename, "./encoded/"+req.file.filename)
 		  }
 		   
-		  tryExample().catch((err) => console.error(err)).finally(()=> res.send(`You have uploaded this video. Video will be available for 5 minutes. <hr/><video width="320" height="240" controls><source src="./encoded/${req.file.filename}" type="video/mp4">Your browser does not support the video tag.</video><hr /><a href="./">Upload another video.</a>`));
+		  tryExample().catch((err) => console.error(err)).finally(()=> {
+			unlinkAsync("./uploads/"+req.file.filename);
+			setTimeout(function(){
+				unlinkAsync("./encoded/"+req.file.filename);
+			},300000);
+			  res.send(`You have uploaded this video. Video will be available for 5 minutes. <hr/><video width="320" height="240" controls><source src="./encoded/${req.file.filename}" type="video/mp4">Your browser does not support the video tag.</video><hr /><a href="./">Upload another video.</a>`)
+		  });
 		/*
 		hbjs.spawn({ 
 			input: "./uploads/"+req.file.filename, 
@@ -73,10 +79,7 @@ app.post('/upload-profile-pic', (req, res) => {
 		)
 		})
 		.on('end',complete=>{
-			unlinkAsync("./uploads/"+req.file.filename);
-			setTimeout(function(){
-				unlinkAsync("./encoded/"+req.file.filename);
-			},300000);
+			
 			console.log(complete);
 			res.send(`You have uploaded this video. Video will be available for 5 minutes. <hr/><video width="320" height="240" controls><source src="./encoded/${req.file.filename}" type="video/mp4">Your browser does not support the video tag.</video><hr /><a href="./">Upload another video.</a>`);
 		})
@@ -85,7 +88,7 @@ app.post('/upload-profile-pic', (req, res) => {
         */
     });
 });
-
+/*
 app.post('/upload-multiple-images', (req, res) => {
     // 10 is the limit I've defined for number of uploaded files at once
     // 'multiple_images' is the name of our file input field
@@ -145,4 +148,4 @@ app.post('/upload-multiple-images', (req, res) => {
         });
         
     });
-});
+});*/
